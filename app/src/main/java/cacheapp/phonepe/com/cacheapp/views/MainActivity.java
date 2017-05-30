@@ -24,7 +24,7 @@ public class MainActivity extends AppCompatActivity {
         setListeners();
         subscriptions = new CompositeSubscription();
         mainViewModel = new MainViewModel();
-        mainViewModel.initializeMap();
+        mainViewModel.initializeMap(10);
         registerSubscriptions();
     }
 

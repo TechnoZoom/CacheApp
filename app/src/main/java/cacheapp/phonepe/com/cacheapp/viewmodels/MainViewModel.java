@@ -12,16 +12,15 @@ import rx.subjects.PublishSubject;
 
 public class MainViewModel {
 
-    private final static int CACHE_MAX_SIZE = 10;
     private LinkedHashMap<Integer, Integer> cacheMap;
     private PublishSubject<Boolean> inCacheSubject = PublishSubject.create();
 
-    public void initializeMap() {
-        cacheMap = new LinkedHashMap<Integer, Integer>(CACHE_MAX_SIZE) {
+    public void initializeMap(int size) {
+        cacheMap = new LinkedHashMap<Integer, Integer>(size) {
             @Override
             protected boolean removeEldestEntry(
                     Map.Entry<Integer, Integer> eldest) {
-                return size() > CACHE_MAX_SIZE;
+                return size() > size;
             }
         };
     }
@@ -32,16 +31,21 @@ public class MainViewModel {
      * @param number
      *              is the number to be checked
      */
-    public void checkInCache(Integer number) {
+    public boolean checkInCache(Integer number) {
         boolean cacheContainsNumber = cacheMap.containsKey(number);
         inCacheSubject.onNext(cacheContainsNumber);
         if(!cacheContainsNumber) {
             cacheMap.put(number,1);
         }
+        return cacheContainsNumber;
     }
 
     public Observable<Boolean> getInCacheObservable() {
         return inCacheSubject;
+    }
+
+    public LinkedHashMap<Integer, Integer> getCacheMap() {
+        return cacheMap;
     }
 
 }
